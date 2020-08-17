@@ -23,6 +23,7 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
+import { mapMutations } from 'vuex';
 
 export default {
   data(){
@@ -34,10 +35,16 @@ export default {
     }
   },
   methods:{
+
+    ...mapMutations(['mostrarLoading','ocultarLoading']),
+
     async getDolar(dia){
       let arrayFecha = dia.split("-")
       let newFecha = arrayFecha[2]+'-'+arrayFecha[1]+'-'+arrayFecha[0]
-      try {        
+      try {
+        
+        this.mostrarLoading({titulo:'Consultando',color:'secondary'}) // Mostrando Loading
+
         let datos = await axios.get(`https://mindicador.cl/api/dolar/${newFecha}`)
         
         if (datos.data.serie.length > 0) {
@@ -48,6 +55,9 @@ export default {
         }
       } catch (error) {
         console.log(error)
+      }
+      finally{
+        this.ocultarLoading()
       }
     }
   },
